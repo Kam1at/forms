@@ -1,0 +1,16 @@
+{% extends 'products/base.html'%}
+{% block content %}
+<div class="container">
+    <div class="col-5">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <p><h5> Вы действительно хотите удалить продукт {{object.name}}? </h5></p>
+                <a class="p-2 btn btn-primary"
+                   href="{% url 'products:product_list' %}">Отменить</a>
+                <button class="p-2 btn btn-danger" type="submit">Удалить</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
