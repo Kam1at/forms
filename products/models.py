@@ -6,6 +6,7 @@ class Product(models.Model):
     price = models.IntegerField(verbose_name='Цена продукта')
     description = models.TextField(verbose_name='Описание')
     category = models.CharField(max_length=100, verbose_name='Категория')
+    owner = models.ForeignKey('Users.User', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'товар'

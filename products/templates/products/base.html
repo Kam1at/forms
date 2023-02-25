@@ -7,9 +7,13 @@
     <title>Продукты</title>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 </head>
+{% if user.is_authenticated %}
 <body>
 {% block content %}
 {% endblock %}
 <script src="/static/js/bootstrap.bundle.min.js"></script>
 </body>
+{% else %}
+<div class="col-8">Чтобы пользоваться сайтом, вам необходимо авторизоваться.</div>
+{% endif %}
 </html>

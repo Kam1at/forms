@@ -19,11 +19,13 @@ class ProductForm(forms.ModelForm):
         name = self.cleaned_data['name']
         if name in self.black_list:
             raise forms.ValidationError('Содержит запрещенное слово в названии')
+        return name
 
     def clean_description(self):
         description = self.cleaned_data['description']
         if description in self.black_list:
             raise forms.ValidationError('Содержит запрещенное слово в описании')
+        return description
 
 
 class VersionForm(forms.ModelForm):
