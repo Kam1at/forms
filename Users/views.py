@@ -1,8 +1,11 @@
 import datetime
+import secrets
+
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordResetView
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView
 from Users.forms import CustomEditUserForm, NewCustomEditUserForm, CustomPasswordResetForm
@@ -64,9 +67,30 @@ def user_activation(request, token):
     return redirect('http://localhost:8000')
 
 
-class CustomPasswordResetView(PasswordResetView):
-    template_name = 'users/password_reset_form.html'
-    form_class = CustomPasswordResetForm
-    success_url = reverse_lazy('password_reset_confirm')
-    email_template_name = 'users/email_reset.html'
-    from_email = settings.EMAIL_HOST_USER
+def reset_password(request):
+    if request.method == 'POST':
+
+        password_reset_form = PasswordResetForm(request.POST)
+        if password_reset_form.is_valid():
+            mail = password_reset_form.cleaned_data['email']
+
+            try:
+                user = User.objects.get(email=mail)
+
+            except Exception:
+                user = False
+
+            if user:
+                new_password = secrets.token_urlsafe(18)[:15]
+                user.set_password(new_password)
+                user.save()
+                send_mail(
+                    subject='Смена пароля',
+                    message=f'Пароль успешно обновлен, для входа в аккаун используйте следующие дынные:\nПочта: {mail}\nПароль: {new_password}',
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[mail],
+                    fail_silently=False
+                )
+                return redirect('users:login')
+
+    return render(request, 'users/password_recovery.html')
