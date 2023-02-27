@@ -2,11 +2,18 @@ from django.db import models
 
 
 class Product(models.Model):
+    STATUS_TRUE = 'True'
+    STATUS_FALSE = 'False'
+    STATUSES = (
+        (STATUS_TRUE, 'Активна'),
+        (STATUS_FALSE, 'Неактивна'),
+    )
     name = models.CharField(max_length=250, verbose_name='Наименование продукта')
     price = models.IntegerField(verbose_name='Цена продукта')
     description = models.TextField(verbose_name='Описание')
     category = models.CharField(max_length=100, verbose_name='Категория')
     owner = models.ForeignKey('Users.User', on_delete=models.CASCADE)
+    status = models.CharField(choices=STATUSES, max_length=10, default=STATUS_FALSE, verbose_name='Признак публикации')
 
     class Meta:
         verbose_name = 'товар'

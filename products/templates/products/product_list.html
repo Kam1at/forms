@@ -9,6 +9,7 @@
             <th scope="col">Цена</th>
             <th scope="col">Описание</th>
             <th scope="col">Категория</th>
+            <th scope="col">Создатель</th>
             <th></th>
         </tr>
         </thead>
@@ -19,6 +20,7 @@
             <td>{{object.price}}</td>
             <td>{{object.description}}</td>
             <td>{{object.category}}</td>
+            <td>{{object.owner}}</td>
             <td>
                 <a class="p-1 btn btn-primary" href="{% url 'products:product_update' object.pk %}">Редактировать</a>
                 <a class="p-1 btn btn-danger" href="{% url 'products:product_delete' object.pk %}">Удалить</a>

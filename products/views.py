@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import transaction
 from django.forms import inlineformset_factory
 from products.forms import ProductForm, VersionForm
@@ -15,13 +16,23 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
     success_url = reverse_lazy('products:product_list')
 
+    def form_valid(self, form):
+        if form.is_valid():
+            self.object = form.save(commit=False)
+            self.object.owner = self.request.user
+            self.object.save()
+        return super(ProductCreateView, self).form_valid(form)
 
-class ProductDeleteView(DeleteView):
+
+class ProductDeleteView(UserPassesTestMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('products:product_list')
+    def test_func(self):
+        product = self.get_object()
+        return self.request.user.has_perm('moderator') or product.owner == self.request.user
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('products:product_list')
@@ -48,3 +59,6 @@ class ProductUpdateView(UpdateView):
 
         return super().form_valid(form)
 
+    def test_func(self):
+        product = self.get_object()
+        return self.request.user.has_perm('moderator') or product.owner == self.request.user
