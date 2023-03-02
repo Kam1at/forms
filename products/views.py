@@ -1,10 +1,14 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import transaction
 from django.forms import inlineformset_factory
+from django.shortcuts import render
+
 from products.forms import ProductForm, VersionForm
-from products.models import Product, Version
+from products.models import Product, Version, Category
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+
+from products.services import cache_categories
 
 
 class ProductListView(ListView):
@@ -27,6 +31,7 @@ class ProductCreateView(CreateView):
 class ProductDeleteView(UserPassesTestMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('products:product_list')
+
     def test_func(self):
         product = self.get_object()
         return self.request.user.has_perm('moderator') or product.owner == self.request.user
@@ -62,3 +67,18 @@ class ProductUpdateView(UserPassesTestMixin, UpdateView):
     def test_func(self):
         product = self.get_object()
         return self.request.user.has_perm('moderator') or product.owner == self.request.user
+
+
+class CategoryListView(ListView):
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['cache_categories'] = cache_categories()
+        return context_data
+
+
+class CategoryCreateView(CreateView):
+    model = Category
+    fields = '__all__'
+    success_url = reverse_lazy('products:category_list')

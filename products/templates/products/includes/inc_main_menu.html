@@ -3,6 +3,7 @@
     <nav class="ms-5">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <a class="p-2 btn btn-primary" href="{% url 'products:product_list' %}">Главная</a>
+            <a class="p-2 btn btn-primary" href="{% url 'products:category_list' %}">Категории</a>
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
                         aria-expanded="false">
@@ -10,6 +11,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{% url 'products:product_create' %}">Продукт</a></li>
+                    <li><a class="dropdown-item" href="{% url 'products:category_create' %}">Категорию</a></li>
                 </ul>
             </div>
         </div>

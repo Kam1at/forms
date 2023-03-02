@@ -145,3 +145,13 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = 'sdakhj@mail.ru'
 EMAIL_HOST_PASSWORD = 'FcbX3TVzJwLt4cNvr9AU'
 EMAIL_USE_SSL = True
+
+CACHE_ENABLED = True
+
+if CACHE_ENABLED:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': 'redis://127.0.0.1:6379'
+        }
+    }
